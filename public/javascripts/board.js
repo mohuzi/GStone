@@ -137,7 +137,7 @@ var board ;
 
 
 // Controller
-var socket = io.connect('http://localhost');
+var socket = io.connect(document.URL);
 
 socket.on('connected', function(data){
     model = new Model(data);
