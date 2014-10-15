@@ -32,8 +32,6 @@ app.get('/', routes.index);
 app.get('/users', user.list);
 
 
-
-
 var server = http.createServer(app);
 var io = require('socket.io').listen(server);
 server.listen(app.get('port'), function(){
@@ -42,38 +40,23 @@ server.listen(app.get('port'), function(){
 
 
 
-// playful Main
+// It is a Main!
 var Qipan = require("./model/qipan.js");
 var pan = new Qipan();
 
-/*
-pan.play(1,1);
-pan.play(1,0);
-pan.play(2,1);
-pan.play(0,1);
-pan.play(1,7);
-pan.play(1,1);
-pan.play(1,2);
-
-pan.play(2,7);
-pan.play(2,2);
-pan.play(3,7);
-pan.play(3,1);
-pan.play(4,7);
-pan.play(2,0);
-*/
-
-
-
+// Socket handler
 io.sockets.on('connection', function (socket) {
     socket.emit('connected',{rectnum: pan.rectnum});
-    //socket.emit('update',pan.map);
-    socket.on('my other event', function (data) {
-        console.log(data);
-    });
+    socket.emit('update',pan.map);
+
+    // io event listener binding
     socket.on('play',function(data){
         pan.play(data.x,data.y);
-        socket.emit('update',pan.map);
+        io.emit('update',pan.map);
     });
 });
 
+
+io.sockets.on('disconnect', function(socket){
+    console.log('disconnect');
+});
